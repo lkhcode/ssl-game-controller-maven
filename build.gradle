@@ -1,0 +1,50 @@
+plugins {
+    id 'base'
+    id 'maven-publish'
+    id 'de.undercouch.download' version '4.0.4'
+}
+
+version = System.getenv('CIRCLE_TAG') ?: "build-${System.getenv('CIRCLE_BUILD_NUM')}"
+
+tasks.register("downloadGameController")
+
+def gameControllerBinaryLocation = "$buildDir/binaries"
+
+def binaries = [
+        ["classifier": "windows_amd64", ext: ".exe"],
+        ["classifier": "linux_amd64", ext: ""],
+        ["classifier": "darwin_amd64", ext: ""]
+]
+
+binaries.each { binary ->
+
+    def gameControllerVersion = System.getenv('CIRCLE_TAG') ?: "v2.6.2"
+    def gameControllerBinary = "ssl-game-controller_${gameControllerVersion}_${binary.classifier}${binary.ext}".toString()
+
+    def task = tasks.register("downloadGameController_${binary.classifier}", Download) {
+        src "https://github.com/RoboCup-SSL/ssl-game-controller/releases/download/${gameControllerVersion}/${gameControllerBinary}"
+        dest file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")
+        overwrite true
+    }
+    tasks["downloadGameController"].dependsOn(task)
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.TIGERs-Mannheim'
+            artifactId = 'ssl-game-controller'
+
+            binaries.each { binary ->
+                artifact(tasks["downloadGameController_${binary.classifier}"].dest) {
+                    classifier binary.classifier
+                    extension binary.ext.replaceAll("\\.", "")
+                }
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    generatePomFileForMavenPublication.dependsOn downloadGameController
+}
