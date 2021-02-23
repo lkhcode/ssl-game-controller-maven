@@ -2,9 +2,11 @@ plugins {
     id 'base'
     id 'maven-publish'
     id 'de.undercouch.download' version '4.0.4'
+    id 'com.palantir.git-version' version '0.12.3'
 }
 
-version = System.getenv('CIRCLE_TAG') ?: "build-${System.getenv('CIRCLE_BUILD_NUM')}"
+ext.versionDetails = versionDetails()
+version versionDetails.lastTag
 
 tasks.register("downloadGameController")
 
@@ -18,7 +20,7 @@ def binaries = [
 
 binaries.each { binary ->
 
-    def gameControllerVersion = System.getenv('CIRCLE_TAG') ?: "v2.6.2"
+    def gameControllerVersion = "v${versionDetails.lastTag}"
     def gameControllerBinary = "ssl-game-controller_${gameControllerVersion}_${binary.classifier}${binary.ext}".toString()
 
     def task = tasks.register("downloadGameController_${binary.classifier}", Download) {
