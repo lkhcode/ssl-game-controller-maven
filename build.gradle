@@ -43,7 +43,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = 'com.github.TIGERs-Mannheim'
-            artifactId = 'ssl-game-controller'
+            artifactId = 'ssl-game-controller-maven'
 
             binaries.each { binary ->
                 artifact(tasks["gameController_${binary.classifier}"]) {
