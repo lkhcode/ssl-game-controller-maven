@@ -28,6 +28,14 @@ binaries.each { binary ->
         dest file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")
         overwrite true
     }
+
+    tasks.register("gameController_${binary.classifier}", Jar) {
+        archiveClassifier.set(binary.classifier)
+        from(file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")) {
+            rename { "ssl-game-controller" }
+        }
+        dependsOn tasks["downloadGameController_${binary.classifier}"]
+    }
     tasks["downloadGameController"].dependsOn(task)
 }
 
@@ -38,15 +46,10 @@ publishing {
             artifactId = 'ssl-game-controller'
 
             binaries.each { binary ->
-                artifact(tasks["downloadGameController_${binary.classifier}"].dest) {
+                artifact(tasks["gameController_${binary.classifier}"]) {
                     classifier binary.classifier
-                    extension binary.ext.replaceAll("\\.", "")
                 }
             }
         }
     }
-}
-
-afterEvaluate {
-    generatePomFileForMavenPublication.dependsOn downloadGameController
 }
