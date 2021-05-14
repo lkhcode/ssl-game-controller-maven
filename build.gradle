@@ -18,8 +18,8 @@ def binaries = [
         ["classifier": "darwin_amd64", ext: ""]
 ]
 
-static def gcVersion() {
-    String tag = versionDetails.lastTag
+def gcVersion() {
+    String tag = project.versionDetails.lastTag
     def parts = tag.split("\\.")
     // Only take the first 3 parts and leave the remaining parts to the maven version
     return "v${parts[0]}.${parts[1]}.${parts[2]}"
