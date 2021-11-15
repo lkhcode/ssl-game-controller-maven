@@ -8,9 +8,12 @@ plugins {
 ext.versionDetails = versionDetails()
 version versionDetails.lastTag
 
-tasks.register("downloadGameController")
+def downloadGameControllerTask = tasks.register("downloadGameController")
+tasks["build"].configure {
+    dependsOn(downloadGameControllerTask)
+}
 
-def gameControllerBinaryLocation = "$buildDir/binaries"
+String gameControllerBinaryLocation = "$buildDir/binaries"
 
 def binaries = [
         ["classifier": "windows_amd64", ext: ".exe"],
@@ -18,9 +21,14 @@ def binaries = [
         ["classifier": "darwin_amd64", ext: ""]
 ]
 
+String extractGameControllerVersion() {
+    def parts = project.version.split("\\.")
+    return "v${parts[0]}.${parts[1]}.${parts[2]}"
+}
+
 binaries.each { binary ->
 
-    def gameControllerVersion = "v2.12.8"
+    def gameControllerVersion = extractGameControllerVersion()
     def gameControllerBinary = "ssl-game-controller_${gameControllerVersion}_${binary.classifier}${binary.ext}".toString()
 
     def task = tasks.register("downloadGameController_${binary.classifier}", Download) {
@@ -49,6 +57,18 @@ publishing {
                 artifact(tasks["gameController_${binary.classifier}"]) {
                     classifier binary.classifier
                 }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = "https://nexus.tigers-mannheim.de/repository/hosted/"
+            credentials {
+                username = System.getenv("MAVEN_REPO_USERNAME")
+                password = System.getenv("MAVEN_REPO_PASSWORD")
+            }
+            authentication {
+                basic(BasicAuthentication)
             }
         }
     }
