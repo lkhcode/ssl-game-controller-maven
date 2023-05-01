@@ -18,12 +18,13 @@ String gameControllerBinaryLocation = "$buildDir/binaries"
 def binaries = [
         ["classifier": "windows_amd64", ext: ".exe"],
         ["classifier": "linux_amd64", ext: ""],
-        ["classifier": "darwin_amd64", ext: ""]
+        ["classifier": "darwin_amd64", ext: ""],
+        ["classifier": "darwin_arm64", ext: ""],
 ]
 
 binaries.each { binary ->
 
-    def gameControllerVersion = "v2.15.6"
+    def gameControllerVersion = "v3.4.0"
     def gameControllerBinary = "ssl-game-controller_${gameControllerVersion}_${binary.classifier}${binary.ext}".toString()
 
     def task = tasks.register("downloadGameController_${binary.classifier}", Download) {
