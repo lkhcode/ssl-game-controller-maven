@@ -24,7 +24,7 @@ def binaries = [
 
 binaries.each { binary ->
 
-    def gameControllerVersion = "v3.4.1"
+    def gameControllerVersion = "v3.4.2"
     def gameControllerBinary = "ssl-game-controller_${gameControllerVersion}_${binary.classifier}${binary.ext}".toString()
 
     def task = tasks.register("downloadGameController_${binary.classifier}", Download) {
