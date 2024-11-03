@@ -17,7 +17,9 @@ String gameControllerBinaryLocation = "$buildDir/binaries"
 
 def binaries = [
         ["classifier": "windows_amd64", ext: ".exe"],
+        ["classifier": "windows_arm64", ext: ".exe"],
         ["classifier": "linux_amd64", ext: ""],
+        ["classifier": "linux_arm64", ext: ""],
         ["classifier": "darwin_amd64", ext: ""],
         ["classifier": "darwin_arm64", ext: ""],
 ]
