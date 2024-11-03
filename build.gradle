@@ -58,16 +58,4 @@ publishing {
             }
         }
     }
-    repositories {
-        maven {
-            url = "https://nexus.tigers-mannheim.de/repository/hosted/"
-            credentials {
-                username = System.getenv("MAVEN_REPO_USERNAME")
-                password = System.getenv("MAVEN_REPO_PASSWORD")
-            }
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
-    }
 }
