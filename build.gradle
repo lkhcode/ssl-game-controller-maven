@@ -45,6 +45,16 @@ binaries.each { binary ->
     tasks["downloadGameController"].dependsOn(task)
 }
 
+
+tasks.register("gameController", Jar) {
+    binaries.forEach { binary ->
+        from(file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")) {
+            rename { "ssl-game-controller_${binary.classifier}" }
+        }
+    }
+    dependsOn tasks["downloadGameController"]
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
@@ -56,6 +66,7 @@ publishing {
                     classifier binary.classifier
                 }
             }
+            artifact(tasks["gameController"])
         }
     }
 }
