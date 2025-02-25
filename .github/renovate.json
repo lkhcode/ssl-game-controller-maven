@@ -1,0 +1,26 @@
+{
+  "extends": [
+    "config:base",
+    "schedule:daily",
+    "docker:pinDigests"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "automergeType": "branch",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    },
+    {
+      "matchCategories": ["ci"],
+      "automerge": true
+    }
+  ]
+}
