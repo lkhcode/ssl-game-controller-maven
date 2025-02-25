@@ -1,6 +1,6 @@
 {
   "extends": [
-    "config:base",
+    "config:recommended",
     "schedule:daily",
     "docker:pinDigests"
   ],
@@ -14,12 +14,17 @@
   },
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
     },
     {
-      "matchCategories": ["ci"],
+      "matchCategories": [
+        "ci"
+      ],
       "automerge": true
     }
   ]
