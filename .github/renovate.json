@@ -33,7 +33,7 @@
       "customType": "regex",
       "fileMatch": ["build.gradle"],
       "matchStrings": [
-        "\\/\\/ renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*def\\s?\\S+\\s?=\\s?\"(?<currentValue>.*?)\".*/g"
+        "\\/\\/ renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*def\\s?\\S+\\s?=\\s?\"(?<currentValue>.*?)\".*"
       ],
       "versioningTemplate": "semver-coerced"
     }
