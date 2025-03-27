@@ -2,7 +2,7 @@ plugins {
     id 'base'
     id 'maven-publish'
     id 'de.undercouch.download' version '5.6.0'
-    id 'com.palantir.git-version' version '3.1.0'
+    id 'com.palantir.git-version' version '3.2.0'
 }
 
 ext.versionDetails = versionDetails()
