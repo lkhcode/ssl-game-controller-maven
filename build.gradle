@@ -27,7 +27,7 @@ def binaries = [
 binaries.each { binary ->
 
     // renovate: datasource=github-releases depName=RoboCup-SSL/ssl-game-controller
-    def gameControllerVersion = "v3.15.0"
+    def gameControllerVersion = "v3.16.0"
     def gameControllerBinary = "ssl-game-controller_${gameControllerVersion}_${binary.classifier}${binary.ext}".toString()
 
     def task = tasks.register("downloadGameController_${binary.classifier}", Download) {
