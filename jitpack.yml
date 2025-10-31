@@ -1,0 +1,14 @@
+# JitPack configuration file
+# This ensures JitPack uses the correct Java version
+
+jdk:
+  - openjdk17
+
+before_install:
+  - echo "Building ssl-game-controller-maven for JitPack"
+
+install:
+  - echo "Using Gradle wrapper for build"
+
+# Optional: Override build command if needed
+# script: ./gradlew build publishToMavenLocal -x test
