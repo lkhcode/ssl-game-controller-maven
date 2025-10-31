@@ -57,9 +57,21 @@ tasks.register("gameController", Jar) {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lkhcode/ssl-game-controller-maven")
+            credentials {
+                // Prefer project properties for local overrides, fall back to environment variables (useful in CI)
+                username = project.findProperty("githubPackagesUser") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("githubPackagesToken") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
     publications {
         maven(MavenPublication) {
-            groupId = 'com.github.TIGERs-Mannheim'
+            groupId = 'com.github.lkhcode'
             artifactId = 'ssl-game-controller-maven'
 
             binaries.each { binary ->
