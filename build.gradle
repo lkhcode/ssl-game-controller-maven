@@ -6,7 +6,7 @@ plugins {
 }
 
 ext.versionDetails = versionDetails()
-version versionDetails.lastTag
+version = versionDetails.lastTag
 
 def downloadGameControllerTask = tasks.register("downloadGameController")
 tasks["build"].configure {
@@ -76,7 +76,7 @@ publishing {
 
             binaries.each { binary ->
                 artifact(tasks["gameController_${binary.classifier}"]) {
-                    classifier binary.classifier
+                    classifier = binary.classifier
                 }
             }
             artifact(tasks["gameController"])
