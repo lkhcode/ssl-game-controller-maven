@@ -27,10 +27,10 @@ jobs:
 
       - name: Publish Maven artifact to GitHub Packages
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         run: |
           # Use the publication name `maven` and repository name `GitHubPackages` from build.gradle
           ./gradlew --no-daemon publishMavenPublicationToGitHubPackagesRepository \
             -PgithubPackagesUser=${{ github.actor }} \
-            -PgithubPackagesToken=${{ secrets.GITHUB_TOKEN }} \
+            -PgithubPackagesToken=${{ secrets.PUBLISH_TOKEN }} \
             --warning-mode all
