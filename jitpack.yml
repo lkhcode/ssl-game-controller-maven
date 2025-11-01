@@ -1,19 +1,2 @@
-# JitPack configuration file
-# Use Java 17 to match Gradle 9.1.0 requirements
-
 jdk:
   - openjdk17
-
-before_install:
-  - echo "Building ssl-game-controller-maven for JitPack"
-  - echo "Java version:"
-  - java -version
-  - echo "JAVA_HOME: $JAVA_HOME"
-
-install:
-  - echo "Using Gradle wrapper for build"
-  - ./gradlew --version
-  
-# Handle missing binaries gracefully - continue build even if some downloads fail
-script: 
-  - ./gradlew clean build publishToMavenLocal --continue --info --stacktrace
