@@ -6,7 +6,7 @@ plugins {
 }
 
 ext.versionDetails = versionDetails()
-version = versionDetails.lastTag
+version versionDetails.lastTag
 
 def downloadGameControllerTask = tasks.register("downloadGameController")
 tasks["build"].configure {
@@ -15,12 +15,10 @@ tasks["build"].configure {
 
 String gameControllerBinaryLocation = "$buildDir/binaries"
 
-// For JitPack compatibility, only include binaries that exist
 def binaries = [
-        ["classifier": "linux_amd64", ext: ""],     // Only this one exists based on previous logs
-        // Temporarily comment out others until proper releases are created
-        // ["classifier": "windows_amd64", ext: ".exe"],
+        ["classifier": "windows_amd64", ext: ".exe"],
         // ["classifier": "windows_arm64", ext: ".exe"],
+        ["classifier": "linux_amd64", ext: ""],
         // ["classifier": "linux_arm64", ext: ""],
         // ["classifier": "darwin_amd64", ext: ""],
         // ["classifier": "darwin_arm64", ext: ""],
@@ -36,18 +34,22 @@ binaries.each { binary ->
         src "https://github.com/lkhcode/ssl-game-controller/releases/download/${gameControllerVersion}/${gameControllerBinary}"
         dest file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")
         overwrite true
-        // For JitPack: don't fail the build if download fails
-        onlyIfModified true
-        doFirst {
-            file("${gameControllerBinaryLocation}").mkdirs()
-        }
     }
 
     tasks.register("gameController_${binary.classifier}", Jar) {
         archiveClassifier.set(binary.classifier)
-        from(file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")) {
+        
+        def binaryFile = file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")
+        
+        // Include binary if it exists, otherwise include README as placeholder
+        from(binaryFile) {
             rename { "ssl-game-controller" }
+            onlyIf { binaryFile.exists() }
         }
+        from(file("README.md")) {
+            onlyIf { !binaryFile.exists() }
+        }
+        
         dependsOn tasks["downloadGameController_${binary.classifier}"]
     }
     tasks["downloadGameController"].dependsOn(task)
@@ -55,9 +57,16 @@ binaries.each { binary ->
 
 
 tasks.register("gameController", Jar) {
+    // Include README as fallback content
+    from(file("README.md"))
+    
+    // Include binaries only if they exist after download
     binaries.forEach { binary ->
-        from(file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")) {
+        def binaryFile = file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")
+        from(binaryFile) {
             rename { "ssl-game-controller_${binary.classifier}" }
+            // Only include if file exists
+            onlyIf { binaryFile.exists() }
         }
     }
     dependsOn tasks["downloadGameController"]
@@ -83,7 +92,7 @@ publishing {
 
             binaries.each { binary ->
                 artifact(tasks["gameController_${binary.classifier}"]) {
-                    classifier = binary.classifier
+                    classifier binary.classifier
                 }
             }
             artifact(tasks["gameController"])
