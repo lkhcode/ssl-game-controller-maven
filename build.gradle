@@ -38,35 +38,43 @@ binaries.each { binary ->
 
     tasks.register("gameController_${binary.classifier}", Jar) {
         archiveClassifier.set(binary.classifier)
-        
+
         def binaryFile = file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")
-        
-        // Include binary if it exists, otherwise include README as placeholder
+
+        // Fail the task if the binary file does not exist
+        doFirst {
+            if (!binaryFile.exists()) {
+                throw new GradleException("Binary file not found: ${binaryFile}")
+            }
+        }
+
         from(binaryFile) {
             rename { "ssl-game-controller" }
-            onlyIf { binaryFile.exists() }
         }
-        from(file("README.md")) {
-            onlyIf { !binaryFile.exists() }
-        }
-        
+
         dependsOn tasks["downloadGameController_${binary.classifier}"]
     }
     tasks["downloadGameController"].dependsOn(task)
 }
 
+// Ensure the main gameController task includes all binaries
+// and fails if any binary is missing
 
 tasks.register("gameController", Jar) {
-    // Include README as fallback content
     from(file("README.md"))
-    
-    // Include binaries only if they exist after download
+
     binaries.forEach { binary ->
         def binaryFile = file("${gameControllerBinaryLocation}/ssl-game-controller_${binary.classifier}${binary.ext}")
+
+        // Fail the task if the binary file does not exist
+        doFirst {
+            if (!binaryFile.exists()) {
+                throw new GradleException("Binary file not found: ${binaryFile}")
+            }
+        }
+
         from(binaryFile) {
             rename { "ssl-game-controller_${binary.classifier}" }
-            // Only include if file exists
-            onlyIf { binaryFile.exists() }
         }
     }
     dependsOn tasks["downloadGameController"]
